@@ -44,6 +44,7 @@ int SparseMatrixManager::deleteAllMatrices() {
 	for each (SparseMatrix* matrix in matrices) {
 		delete matrix;
 	}
+	matrices.clear();
 	return ERROR_CODES::SUCCESS;
 }
 

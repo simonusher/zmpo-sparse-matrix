@@ -58,6 +58,7 @@ void Interface::selectAndPerformOperation() {
 			processCommandDef();
 		}
 		else if (args.at(0) == COMMAND_EXIT) {
+			sparseMatrixManager->deleteAllMatrices();
 			this->finished = true;
 			programResponse = PROMPT_EXIT;
 		}
