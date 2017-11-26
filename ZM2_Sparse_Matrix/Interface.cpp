@@ -1,9 +1,5 @@
 #include "Interface.h"
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <algorithm>
-#include <iterator>
+
 Interface::Interface() {
 	this->sparseMatrixManager = new SparseMatrixManager();
 	this->finished = false;
@@ -66,13 +62,13 @@ void Interface::selectAndPerformOperation() {
 			programResponse = PROMPT_EXIT;
 		}
 		else {
-			programResponse = "'" + args.at(0) + "'" + PROMPT_ERROR_INVALID_COMMAND;
+			programResponse = APOSTROPHE + args.at(0) + APOSTROPHE + PROMPT_ERROR_INVALID_COMMAND;
 		}
 	}
 	else {
-		programResponse = "";
+		programResponse = EMPTY_STRING;
 	}
-	this->currentCommand = "";
+	this->currentCommand = EMPTY_STRING;
 	this->args.clear();
 }
 
@@ -99,7 +95,7 @@ void Interface::processCommandDel() {
 	if (this->args.size() != 2) {
 		programResponse = PROMPT_ERROR_INVALID_ARGUMENTS_NUMBER_FOR_COMMAND + APOSTROPHE + COMMAND_DEL + APOSTROPHE + FULL_STOP;
 	}
-	else if (isArgumentAtIndexNumber(1) && !overflowsInt(1)) {
+	else if (isArgumentAtIndexANumber(1) && !argumentAtIndexOverflowsInt(1)) {
 		int errorCode = sparseMatrixManager->deleteMatrix(std::atoi(args.at(1).c_str()));
 		if (errorCode == SUCCESS) {
 			programResponse = PROMPT_DELETED_MATRIX_AT_OFFSET + args.at(1) + FULL_STOP;
@@ -117,7 +113,7 @@ void Interface::processCommandPrint() {
 	if (this->args.size() != 2) {
 		programResponse = PROMPT_ERROR_INVALID_ARGUMENTS_NUMBER_FOR_COMMAND + APOSTROPHE + COMMAND_PRINT + APOSTROPHE + FULL_STOP;
 	}
-	else if (isArgumentAtIndexNumber(1) && !overflowsInt(1)) {
+	else if (isArgumentAtIndexANumber(1) && !argumentAtIndexOverflowsInt(1)) {
 		int errorCode = sparseMatrixManager->printMatrix(std::atoi(args.at(1).c_str()), this->programResponse);
 		if (errorCode != SUCCESS) {
 			programResponse = PROMPT_ERROR_MATRIX_OFFSET_OUT_OF_BOUNDS;
@@ -132,7 +128,7 @@ void Interface::processCommandClone() {
 	if (this->args.size() != 2) {
 		programResponse = PROMPT_ERROR_INVALID_ARGUMENTS_NUMBER_FOR_COMMAND + APOSTROPHE + COMMAND_CLONE + APOSTROPHE + FULL_STOP;
 	}
-	else if (isArgumentAtIndexNumber(1) && !overflowsInt(1)) {
+	else if (isArgumentAtIndexANumber(1) && !argumentAtIndexOverflowsInt(1)) {
 		int errorCode = sparseMatrixManager->cloneMatrix(std::atoi(args.at(1).c_str()));
 		if (errorCode != SUCCESS) {
 			programResponse = PROMPT_ERROR_MATRIX_OFFSET_OUT_OF_BOUNDS;
@@ -147,7 +143,7 @@ void Interface::processCommandRename() {
 	if (this->args.size() != 3) {
 		programResponse = PROMPT_ERROR_INVALID_ARGUMENTS_NUMBER_FOR_COMMAND + APOSTROPHE + COMMAND_RENAME + APOSTROPHE + FULL_STOP;
 	}
-	else if (isArgumentAtIndexNumber(1) && !overflowsInt(1)) {
+	else if (isArgumentAtIndexANumber(1) && !argumentAtIndexOverflowsInt(1)) {
 		int errorCode = sparseMatrixManager->renameMatrix(std::atoi(args.at(1).c_str()), args.at(2));
 		if (errorCode != SUCCESS) {
 			programResponse = PROMPT_ERROR_MATRIX_OFFSET_OUT_OF_BOUNDS;
@@ -162,13 +158,13 @@ void Interface::processCommandAddmat() {
 	int lastArgumentIndex = args.size() - 1;
 	if (this->args.size() < 4) {
 		programResponse = PROMPT_ERROR_INVALID_ARGUMENTS_NUMBER_FOR_COMMAND + APOSTROPHE + COMMAND_ADDMAT + APOSTROPHE + FULL_STOP;
-	}//if (this->currentCommandSplit.size() < 4) 
+	}
 	else {
-		addMat(!isArgumentAtIndexNumber(lastArgumentIndex));
+		addMatHelper(!isArgumentAtIndexANumber(lastArgumentIndex));
 	}
 }
 
-void Interface::addMat(bool hasName) {
+void Interface::addMatHelper(bool hasName) {
 	int numberOfDimensions;
 	int defaultValue;
 	int *dimensionSizes = nullptr;
@@ -176,10 +172,11 @@ void Interface::addMat(bool hasName) {
 	int lastNumericArgumentIndex;
 	if (hasName) {
 		lastNumericArgumentIndex = lastArgumentIndex - 1;
-	}//if(hasName)
+	}
 	else {
 		lastNumericArgumentIndex = lastArgumentIndex;
 	}
+
 	bool numericArgumentsCorrect = isRangeOfArgumentsCorrect(1, lastNumericArgumentIndex);
 
 	if (numericArgumentsCorrect) {
@@ -192,25 +189,35 @@ void Interface::addMat(bool hasName) {
 				dimensionSizes = new int[numberOfDimensions];
 				for (int i = 0; i < numberOfDimensions; i++) {
 					dimensionSizes[i] = std::atoi(args.at(i + 2).c_str());
-				}//for (int i = 0; i < numberOfDimensions; i++)
+				}
 				errorCode = sparseMatrixManager->addNewMatrix(numberOfDimensions, dimensionSizes, defaultValue, matrixName);
-			}//if (numberOfDimensions == args.size() - 4)
-			else {
-				errorCode = INVALID_ARGUMENTS_NUMBER;
 			}
-		}//if (hasName)
+			else {
+				if (numberOfDimensions < 1) {
+					errorCode = INVALID_NUMBER_OF_DIMENSIONS;
+				}
+				else {
+					errorCode = INVALID_ARGUMENTS_NUMBER;
+				}
+			}
+		}
 		else {
 			if (numberOfDimensions == args.size() - 3) {
 				dimensionSizes = new int[numberOfDimensions];
 				for (int i = 0; i < numberOfDimensions; i++) {
 					dimensionSizes[i] = std::atoi(args.at(i + 2).c_str());
-				}//for (int i = 0; i < numberOfDimensions; i++)
+				}
 				errorCode = sparseMatrixManager->addNewMatrix(numberOfDimensions, dimensionSizes, defaultValue);
-			}//if (numberOfDimensions == args.size() - 4)
+			}
 			else {
-				errorCode = INVALID_ARGUMENTS_NUMBER;
-			}//else
-		}//else
+				if (numberOfDimensions < 1) {
+					errorCode = INVALID_NUMBER_OF_DIMENSIONS;
+				}
+				else {
+					errorCode = INVALID_ARGUMENTS_NUMBER;
+				}
+			}
+		}
 		switch (errorCode) {
 		case SUCCESS:
 			programResponse = EMPTY_STRING;  //constructor prints to screen so there's no need to print anything more
@@ -223,8 +230,14 @@ void Interface::addMat(bool hasName) {
 			programResponse = PROMPT_ERROR_INVALID_DIMENSION_SIZE;
 			delete[] dimensionSizes;
 			break;
-		}//switch (errorCode)
-	}//if (numericArgumentsCorrect)
+		case ERROR_CODES::INVALID_ARGUMENTS_NUMBER:
+			programResponse = PROMPT_ERROR_INVALID_ARGUMENTS_NUMBER_FOR_COMMAND + APOSTROPHE + COMMAND_ADDMAT + APOSTROPHE + FULL_STOP;
+			break;
+		case ERROR_CODES::INVALID_NUMBER_OF_DIMENSIONS:
+			programResponse = PROMPT_ERROR_INVALID_DIMENSION_SIZES_NUMBER;
+			break;
+		}
+	}
 	else {
 		programResponse = PROMPT_ERROR_INVALID_ARGUMENTS_FOR_COMMAND + APOSTROPHE + COMMAND_ADDMAT + APOSTROPHE + FULL_STOP;
 	}
@@ -278,12 +291,12 @@ void Interface::printProgramResponse() {
 }
 
 void Interface::printCommandPrompt() {
-	std::cout << COMMAND_PROMPT;
+	std::cout << COMMAND_PROMPT + SPACE;
 }
 
-bool Interface::isArgumentAtIndexNumber(int indexOfArgument) {
+bool Interface::isArgumentAtIndexANumber(int indexOfArgument) {
 	std::string argument = this->args.at(indexOfArgument);
-	if (argument.at(0) == '-') argument = argument.substr(1, argument.size() - 1);
+	if (argument.at(0) == MINUS) argument = argument.substr(1, argument.size() - 1);
 	std::string::const_iterator it = argument.begin();
 	while (it != argument.end() && isdigit(*it)) {
 		++it;
@@ -291,10 +304,10 @@ bool Interface::isArgumentAtIndexNumber(int indexOfArgument) {
 	return !argument.empty() && it == argument.end();
 }
 
-bool Interface::overflowsInt(int indexOfArgument) {
+bool Interface::argumentAtIndexOverflowsInt(int indexOfArgument) {
 	//check string length for overflow
 	std::string argument = this->args.at(indexOfArgument);
-	if (argument.at(0) == '-') argument = argument.substr(1, argument.size() - 1);
+	if (argument.at(0) == MINUS) argument = argument.substr(1, argument.size() - 1);
 	if (argument.size() < MAX_INT_STRING_LENGTH) {
 		return false;
 	}
@@ -319,18 +332,9 @@ bool Interface::overflowsInt(int indexOfArgument) {
 bool Interface::isRangeOfArgumentsCorrect(int firstArgumentIndex, int lastArgumentIndex) {
 	bool isCorrect = true;
 	for (int i = lastArgumentIndex; i >= firstArgumentIndex && isCorrect; i--) {
-		if (!isArgumentAtIndexNumber(i) || overflowsInt(i)) {
+		if (!isArgumentAtIndexANumber(i) || argumentAtIndexOverflowsInt(i)) {
 			isCorrect = false;
 		}
 	}
 	return isCorrect;
 }
-
-//addmat <dimnum> <dimsizes> <def> <name> >=4
-//list <>                                   1
-//del <matoff>                              2
-//delall <>                                 1
-//def <matoff> <coordinates> <value>      >=4
-//print <matoff>                            2
-//clone <matoff>                            2
-//rename <matoff> <newName>                 3

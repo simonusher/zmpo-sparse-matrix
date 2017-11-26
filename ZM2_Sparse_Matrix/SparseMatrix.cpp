@@ -6,7 +6,7 @@ SparseMatrix::SparseMatrix(int numberOfDimensions, int *dimensionSizes, int defa
 	definedArrayCapacity = DEFAULT_DEFINED_ARRAY_CAPACITY;
 	numberOfDefinedValues = 0;
 	definedValuesArray = new SparseCell*[definedArrayCapacity];
-	std::cout << "create: " << name << std::endl;
+	std::cout << MSG_CREATE + COLON + SPACE << name << std::endl;
 }
 
 SparseMatrix::SparseMatrix(int numberOfDimensions, int *dimensionSizes, int defaultValue, std::string name):
@@ -14,7 +14,7 @@ SparseMatrix::SparseMatrix(int numberOfDimensions, int *dimensionSizes, int defa
 	definedArrayCapacity = DEFAULT_DEFINED_ARRAY_CAPACITY;
 	numberOfDefinedValues = 0;
 	definedValuesArray = new SparseCell*[definedArrayCapacity];
-	std::cout << "create: " << name << std::endl;
+	std::cout << MSG_CREATE + COLON + SPACE << name << std::endl;
 }
 
 SparseMatrix::SparseMatrix(SparseMatrix &other){
@@ -22,14 +22,14 @@ SparseMatrix::SparseMatrix(SparseMatrix &other){
 	this->dimensionSizes = new int[this->numberOfDimensions];
 	arrayUtils::copyArray(this->dimensionSizes, other.dimensionSizes, this->numberOfDimensions);
 	this->defaultValue = other.defaultValue;
-	this->name = other.name + "_copy";
+	this->name = other.name + MSG_COPY;
 	this->definedArrayCapacity = other.definedArrayCapacity;
 	this->numberOfDefinedValues = other.numberOfDefinedValues;
 	this->definedValuesArray = new SparseCell*[definedArrayCapacity];
 	for (int i = 0; i < numberOfDefinedValues; i++) {
 		this->definedValuesArray[i] = new SparseCell(*(other.definedValuesArray[i]), numberOfDimensions);
 	}
-	std::cout << "create: " << name << std::endl;
+	std::cout << MSG_CREATE + COLON + SPACE << name << std::endl;
 }
 
 SparseMatrix::~SparseMatrix() {
@@ -38,7 +38,7 @@ SparseMatrix::~SparseMatrix() {
 		delete definedValuesArray[i];
 	}
 	delete[] definedValuesArray;
-	std::cout << "destroy: " << name << std::endl;
+	std::cout << MSG_DESTROY + COLON + SPACE << name << std::endl;
 }
 
 
@@ -143,9 +143,9 @@ std::string SparseMatrix::getName() {
 
 std::string SparseMatrix::getInfo() {
 	std::string matrixInfo;
-	matrixInfo.append("size: ");
+	matrixInfo.append(MSG_SIZE + COLON + SPACE);
 	matrixInfo.append(arrayUtils::arrayToString(this->dimensionSizes, this->numberOfDimensions));
-	matrixInfo.append(" values: ");
+	matrixInfo.append(SPACE + MSG_VALUES + COLON + SPACE);
 	int *temp = new int[numberOfDimensions];
 	printHelper(matrixInfo, temp, 0);
 	delete temp;
@@ -195,9 +195,9 @@ void SparseMatrix::printHelper(std::string &result, int *tab, int n) {
 			int value;
 			getValueAt(tab, numberOfDimensions, value);
 			result.append(arrayUtils::arrayToString(tab, this->numberOfDimensions));
-			result.append(":");
+			result.append(COLON);
 			result.append(std::to_string(value));
-			result.append(";");
+			result.append(SEMICOLON);
 		}
 		else printHelper(result, tab, n + 1);
 	}
@@ -206,7 +206,7 @@ void SparseMatrix::printHelper(std::string &result, int *tab, int n) {
 std::string SparseMatrix::toList() {
 	std::string result;
 	result.append(name);
-	result.append(" size: ");
+	result.append(SPACE + MSG_SIZE + COLON + SPACE);
 	result.append(arrayUtils::arrayToString(dimensionSizes, numberOfDimensions));
 	return result;
 }

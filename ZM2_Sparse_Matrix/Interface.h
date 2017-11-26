@@ -1,5 +1,10 @@
 #pragma once
 #include "SparseMatrixManager.h"
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <algorithm>
+#include <iterator>
 //constants
 //commands
 //0 arguments
@@ -16,7 +21,7 @@ const std::string COMMAND_ADDMAT = "addmat";
 const std::string COMMAND_DEF = "def";
 const std::string COMMAND_EXIT = "exit";
 
-const std::string COMMAND_PROMPT = "$ ";
+//SUCCESS PROMPTS
 const std::string PROMPT_DELETED_ALL_MATRICES = "Deleted all matrices.";
 const std::string PROMPT_DELETED_MATRIX_AT_OFFSET = "Successfully deleted matrix at offset: ";
 const std::string PROMPT_DEFINED_VALUE_IN_MATRIX_AT_OFFSET = "Successfully defined value in matrix at offset: ";
@@ -29,9 +34,8 @@ const std::string PROMPT_ERROR_INVALID_ARGUMENTS_FOR_COMMAND = "Invalid argument
 const std::string PROMPT_ERROR_INVALID_DIMENSION_SIZES_NUMBER = "Invalid dimension sizes number.";
 const std::string PROMPT_ERROR_INVALID_DIMENSION_SIZE = "Invalid dimension size.";
 const std::string PROMPT_ERROR_MATRIX_OFFSET_OUT_OF_BOUNDS = "Matrix offset out of bounds.";
-const std::string FULL_STOP = ".";
-const std::string EMPTY_STRING = "";
-const std::string APOSTROPHE = "'";
+//utility strings
+const std::string COMMAND_PROMPT = "$";
 
 class Interface {
 public:
@@ -55,12 +59,12 @@ private:
 	void processCommandClone();
 	void processCommandRename();
 	void processCommandAddmat();
-	void addMat(bool hasName);
+	void addMatHelper(bool hasName);
 	void processCommandDef();
 
 	void printProgramResponse();
 	void printCommandPrompt();
-	bool isArgumentAtIndexNumber(int indexOfArgument);
-	bool overflowsInt(int indexOfArgument);
+	bool isArgumentAtIndexANumber(int indexOfArgument);
+	bool argumentAtIndexOverflowsInt(int indexOfArgument);
 	bool isRangeOfArgumentsCorrect(int firstArgumentIndex, int lastArgumentIndex);
 };

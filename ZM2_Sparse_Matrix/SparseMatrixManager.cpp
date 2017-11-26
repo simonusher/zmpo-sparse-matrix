@@ -27,14 +27,14 @@ std::string SparseMatrixManager::listMatrices() {
 	std::string result;
 	int numberOfMatrices = matrices.size();
 	result.append(std::to_string(numberOfMatrices));
-	result.append(" matrices:");
+	result.append(SPACE + MSG_MATRICES + COLON);
 	if (numberOfMatrices > 0) {
-		result.append("\n");
+		result.append(NEWLINE);
 	}
 	for (int i = 0; i < numberOfMatrices; i++) {
 		result.append(matrices.at(i)->toList());
 		if (i < numberOfMatrices - 1) {
-			result.append("\n");
+			result.append(NEWLINE);
 		}
 	}
 	return result;

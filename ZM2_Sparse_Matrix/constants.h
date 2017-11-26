@@ -9,6 +9,15 @@ const std::string MAX_INT_STRING = std::to_string(INT_MAX);
 const int MAX_INT_STRING_LENGTH = MAX_INT_STRING.size();
 
 
+//utility strings
+const char MINUS = '-';
+const std::string SPACE = " ";
+const std::string COLON = ":";
+const std::string SEMICOLON = ";";
+const std::string NEWLINE = "\n";
+const std::string FULL_STOP = ".";
+const std::string EMPTY_STRING = "";
+const std::string APOSTROPHE = "'";
 
 //error codes
 

@@ -4,10 +4,17 @@
 #include <iostream>
 #include "constants.h"
 #include "arrayUtils.h"
+
 const std::string DEFAULT_MATRIX_NAME = "def_name";
+const std::string MSG_MATRICES = "matrices";
+const std::string MSG_SIZE = "size";
+const std::string MSG_VALUES = "values";
+const std::string MSG_CREATE = "create";
+const std::string MSG_COPY = "_copy";
+const std::string MSG_DESTROY = "destroy";
 
 class SparseMatrix {
-public:
+	friend class SparseMatrixManager;
 	SparseMatrix(int numberOfDimensions, int *dimensionSizes, int defaultValue);
 	SparseMatrix(int numberOfDimensions, int *dimensionSizes, int defaultValue, std::string name);
 	SparseMatrix(SparseMatrix &other);
@@ -22,7 +29,7 @@ public:
 	std::string getName();
 	std::string getInfo();
 	std::string toList();
-private:
+
 	int numberOfDimensions;
 	int *dimensionSizes;
 	int defaultValue;

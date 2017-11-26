@@ -1,6 +1,9 @@
 #pragma once
 #include <cstring>
 #include <string>
+
+const std::string OPENING_SQUARE_BRACKET = "[";
+const std::string CLOSING_SQUARE_BRACKET = "]";
 namespace arrayUtils{
 	template <class T>
 	void copyArray(T *destination, T *source, int numberOfElements) {
@@ -56,14 +59,14 @@ namespace arrayUtils{
 	template <class T>
 	std::string arrayToString(T *startPointer, int numberOfElements) {
 		std::string arrayText;
-		arrayText.append("[");
+		arrayText.append(OPENING_SQUARE_BRACKET);
 		for (int i = 0; i < numberOfElements; i++) {
 			arrayText.append(std::to_string(startPointer[i]));
 			if (i != numberOfElements - 1) {
 				arrayText.append(", ");
 			}
 		}
-		arrayText.append("]");
+		arrayText.append(CLOSING_SQUARE_BRACKET);
 		return arrayText;
 	}
 }
