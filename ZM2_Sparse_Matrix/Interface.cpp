@@ -223,7 +223,7 @@ void Interface::addMatHelper(bool hasName) {
 		case SUCCESS:
 			programResponse = EMPTY_STRING;  //constructor prints to screen so there's no need to print anything more
 			break;
-		case ERROR_CODES::INVALID_DIMENSION_NUMBER:
+		case ERROR_CODES::NEGATIVE_DIMENSION_NUMBER:
 			programResponse = PROMPT_ERROR_INVALID_DIMENSION_SIZES_NUMBER;
 			delete[] dimensionSizes;
 			break;

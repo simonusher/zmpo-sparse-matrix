@@ -1,5 +1,4 @@
 #include "SparseMatrixManager.h"
-#include <vector>
 
 SparseMatrixManager::SparseMatrixManager() {
 };
@@ -32,6 +31,7 @@ std::string SparseMatrixManager::listMatrices() {
 		result.append(NEWLINE);
 	}
 	for (int i = 0; i < numberOfMatrices; i++) {
+		result.append(OPENING_SQUARE_BRACKET + std::to_string(i) + CLOSING_SQUARE_BRACKET + SPACE + MINUS + SPACE);
 		result.append(matrices.at(i)->toList());
 		if (i < numberOfMatrices - 1) {
 			result.append(NEWLINE);
